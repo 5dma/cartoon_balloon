@@ -1,0 +1,10 @@
+{
+	"callout": {
+		"top_left": [ 340, 55 ],
+		"center": [ 325, 140 ],
+		"top_right": [ 355, 50 ]
+	},
+	"balloon_bottom_right": [ 300, 60 ],
+	"text": "I like lightnig",
+	"source_image": "/tmp/franklin.jpg"
+}
