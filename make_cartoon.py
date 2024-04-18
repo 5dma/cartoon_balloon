@@ -1,18 +1,22 @@
 from wand.image import Image
 from wand.drawing import Drawing
+from wand.color import Color
 from os.path import exists
 import json
 
 NEW_WIDTH = 520
-BALLOON_FILL_COLOR = '#FEFEFE'
-BALLOON_STROKE_COLOR = '#000000'
+BALLOON_FILL_COLOR = Color('#f2e38b')
+BALLOON_STROKE_COLOR = Color('#000000')
 EXCESS_FONT_HEIGHT = 10
 PADDING = 10
 EXCESS_TEXT_HEIGHT = 10
 ELEVATION = 10
 CALLOUT_INDENT = 10
 CALLOUT_SPACE = 20
-
+ELEVATION = 5
+INDENT = 10
+SPACE = 20
+STROKE_WIDTH = 2
 
 if not exists('points.json'):
 	print("The configuration file points.json is missing. Create it and rerun this script.")
@@ -53,8 +57,9 @@ print("text height: {0}, text width: {1}".format(text_height, text_width))
 
 # Add balloon
 balloon = Drawing()
-balloon.fill_color = BALLOON_FILL_COLOR
+balloon.stroke_width = STROKE_WIDTH
 balloon.stroke_color = BALLOON_STROKE_COLOR
+balloon.fill_color = BALLOON_FILL_COLOR
 left = data['text_bottom_left'][0] - PADDING
 top = data['text_bottom_left'][1] - text_height + EXCESS_TEXT_HEIGHT - PADDING
 right = left + text_width + 2*PADDING
@@ -63,11 +68,23 @@ balloon.rectangle(left, top, right,bottom)
 
 
 #Add path
-points = [(100,100),(150,100),(75,75)]
+p1 = (left + INDENT, bottom - ELEVATION)
+p2 = data['callout_vertex']
+p3 = (p1[0] + SPACE, p1[1])
+#print(p1)
+#print(p2)
+#print(p3)
 path = Drawing()
+path.stroke_width = STROKE_WIDTH
+path.stroke_color = BALLOON_STROKE_COLOR
 path.fill_color = BALLOON_FILL_COLOR
-path.stoke_color = BALLOON_STROKE_COLOR
+ 
+# points list for polygon
+points = [p1, p2, p3]
+ 
+# draw polyline using polyline() function
 path.polyline(points)
+
 
 #Assemble image
 balloon(new_image)

@@ -1,6 +1,6 @@
 {
-	"callout_vertex": [ 325, 140 ],
-	"text_bottom_left": [ 380, 60 ],
+	"callout_vertex": [ 310, 215 ],
+	"text_bottom_left": [ 410,95 ],
 	"text_string": "I like x",
 	"source_image": "/tmp/franklin.jpg"
 }
