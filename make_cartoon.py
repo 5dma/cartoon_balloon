@@ -1,64 +1,76 @@
 from wand.image import Image
 from wand.drawing import Drawing
-import argparse
 from os.path import exists
 import json
 
-parser = argparse.ArgumentParser(description='Creates a balloon of text at a specified point in an image')
-parser.add_argument('-i','--image',action='store',required=True, help='Source image')
-parser.add_argument('-t','--text',action='store',required=True, help='Text in balloon')
-args = parser.parse_args()
+NEW_WIDTH = 520
+BALLOON_FILL_COLOR = '#FEFEFE'
+BALLOON_STROKE_COLOR = '#000000'
+EXCESS_FONT_HEIGHT = 10
+PADDING = 10
+EXCESS_TEXT_HEIGHT = 10
+ELEVATION = 10
+CALLOUT_INDENT = 10
+CALLOUT_SPACE = 20
 
-if not exists(args.image):
-	print("No such file {0}".format(args.image))
+
+if not exists('points.json'):
+	print("The configuration file points.json is missing. Create it and rerun this script.")
 	exit()
 
-image1 = Image(filename=args.image)
-text_string = args.text
+
+infile = open('points.json','r')
+data = json.load(infile)
+infile.close()
+#print(data)
+
+
+if not exists(data['source_image']):
+	print("The source image {0} is missing. Try again.".format(data['source_image']))
+	exit()
+
+new_image = Image(filename = data['source_image'])
+text_string = data['text_string']
 
 # Scale image to 520 width
-dimensions = image1.size
-new_width = 520
-new_height = int((new_width/dimensions[0] ) * dimensions[1])
-image1.resize(new_width, new_height)
-image1.save(filename="stage_1.jpg")
+dimensions = new_image.size
+new_height = int((NEW_WIDTH/dimensions[0] ) * dimensions[1])
+new_image.resize(NEW_WIDTH, new_height)
 
-balloon_fill_color = '#FEFEFE'
-balloon_stroke_color = '#000000'
 
 # Add text
 text = Drawing()
 text.font = 'Verdana'
-text.fill_color = balloon_stroke_color
+text.fill_color = BALLOON_STROKE_COLOR
 text.font_size = 20
 text.gravity = 'north_west'
-text.text(120,105,text_string)
-metrics = text.get_font_metrics(image1,text_string)
-
+text.text(data['text_bottom_left'][0],data['text_bottom_left'][1] - EXCESS_FONT_HEIGHT * 2,text_string)
+metrics = text.get_font_metrics(new_image,text_string)
 (text_width, text_height) = metrics.size()
+
+print(metrics)
 print("text height: {0}, text width: {1}".format(text_height, text_width))
-image1.save(filename="stage_2.jpg")
 
 # Add balloon
-rectangle_height = text_height
-rectangle_width = text_width + 50
 balloon = Drawing()
-balloon.fill_color = balloon_fill_color
-balloon.stroke_color = balloon_stroke_color
-balloon.rectangle(120,105, None, None, rectangle_width, rectangle_height)
-
+balloon.fill_color = BALLOON_FILL_COLOR
+balloon.stroke_color = BALLOON_STROKE_COLOR
+left = data['text_bottom_left'][0] - PADDING
+top = data['text_bottom_left'][1] - text_height + EXCESS_TEXT_HEIGHT - PADDING
+right = left + text_width + 2*PADDING
+bottom = top + text_height - EXCESS_TEXT_HEIGHT + 2*PADDING
+balloon.rectangle(left, top, right,bottom)
 
 
 #Add path
-points = [(100,100),(200,200),(300,100)]
+points = [(100,100),(150,100),(75,75)]
 path = Drawing()
-path.fill_color = balloon_fill_color
-path.stoke_color = balloon_stroke_color
+path.fill_color = BALLOON_FILL_COLOR
+path.stoke_color = BALLOON_STROKE_COLOR
 path.polyline(points)
-image1.save(filename="stage_4.jpg")
 
 #Assemble image
-balloon(image1)
-path(image1)
-text(image1)
-image1.save(filename="stage_3.jpg")
+balloon(new_image)
+path(new_image)
+text(new_image)
+new_image.save(filename="stage_3.jpg")
