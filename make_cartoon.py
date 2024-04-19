@@ -64,8 +64,11 @@ metrics = text.get_font_metrics(new_image,text_string,multiline=is_multiline)
 float_metrics = metrics.size()
 text_width = int(float_metrics[0])
 text_height = int(float_metrics[1])
-print(metrics)
-print("text height: {0}, text width: {1}".format(text_height, text_width))
+
+if debug:
+	print(metrics)
+	print("text height: {0}, text width: {1}".format(text_height, text_width))
+
 left_offset = data['text_bottom_left'][0]
 
 excess_spacing = text_height - (number_text_lines * text.font_size) # text height - characters
@@ -77,7 +80,9 @@ if baseline < 0:
 	print("Found a text baseline of {0}, so increasing height of image by {1} to {2}".format(baseline,offset, new_height + offset))
 	new_image.extent(None,new_height + offset ,None,None, 'south')
 
-print("left_offset: {0}, baseline: {1}, offset: {2}".format(left_offset, baseline, offset))
+if debug:
+	print("left_offset: {0}, baseline: {1}, offset: {2}".format(left_offset, baseline, offset))
+
 text.text(left_offset, baseline + offset, text_string)
 
 
@@ -94,14 +99,10 @@ balloon.rectangle(left, top, right,bottom)
 
 
 #Add path
-vertex = numpy.array(data['callout_vertex'])
-vertex = vertex + baseline
+vertex = data['callout_vertex']
 p1 = (left + INDENT, bottom - ELEVATION)
 p2 = vertex
 p3 = (p1[0] + SPACE, p1[1])
-#print(p1)
-#print(p2)
-#print(p3)
 path = Drawing()
 path.stroke_width = STROKE_WIDTH
 path.stroke_color = BALLOON_STROKE_COLOR
@@ -109,6 +110,9 @@ path.fill_color = BALLOON_FILL_COLOR
  
 # points list for polygon
 points = [p1, p2, p3]
+
+if debug:
+	print("Path points: {0}".format(points))
  
 # draw polyline using polyline() function
 path.polyline(points)
