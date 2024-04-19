@@ -20,6 +20,7 @@ SPACE = 20
 STROKE_WIDTH = 2
 EXTRA_OFFSET = 10
 FONT_SIZE = 20
+NEW_IMAGE = '/tmp/new_image.jpg'
 
 if not exists('points.json'):
 	print("The configuration file points.json is missing. Create it and rerun this script.")
@@ -77,7 +78,7 @@ if baseline < 0:
 	new_image.extent(None,new_height + offset ,None,None, 'south')
 
 print("left_offset: {0}, baseline: {1}, offset: {2}".format(left_offset, baseline, offset))
-text.text(left_offset, baseline, text_string)
+text.text(left_offset, baseline + offset, text_string)
 
 
 # Add balloon
@@ -117,4 +118,5 @@ path.polyline(points)
 balloon(new_image)
 path(new_image)
 text(new_image)
-new_image.save(filename="stage_3.jpg")
+new_image.save(filename=NEW_IMAGE)
+print("New image at {0}".format(NEW_IMAGE))
