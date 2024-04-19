@@ -19,6 +19,7 @@ INDENT = 10
 SPACE = 20
 STROKE_WIDTH = 2
 EXTRA_OFFSET = 10
+FONT_SIZE = 20
 
 if not exists('points.json'):
 	print("The configuration file points.json is missing. Create it and rerun this script.")
@@ -55,7 +56,7 @@ if debug:
 text = Drawing()
 text.font = 'Verdana'
 text.fill_color = BALLOON_STROKE_COLOR
-text.font_size = 23
+text.font_size = FONT_SIZE
 text.gravity = 'north_west'
 metrics = text.get_font_metrics(new_image,text_string,multiline=is_multiline)
 float_metrics = metrics.size()
@@ -63,9 +64,10 @@ text_width = int(float_metrics[0])
 text_height = int(float_metrics[1])
 print(metrics)
 print("Text interline spaceing {0}".format(text.text_interline_spacing))
+print("Character height: {0}".format(metrics[1]))
 print("text height: {0}, text width: {1}".format(text_height, text_width))
 left_offset = data['text_bottom_left'][0]
-baseline = data['text_bottom_left'][1]  - text_height - EXCESS_FONT_HEIGHT * 2
+baseline = int(data['text_bottom_left'][1]  - text.font_size)
 offset = 0
 if baseline < 0:
 	offset = abs(baseline) + EXTRA_OFFSET
@@ -73,7 +75,7 @@ if baseline < 0:
 	new_image.extent(None,new_height + offset ,None,None, 'south')
 
 print("left_offset: {0}, baseline: {1}, offset: {2}".format(left_offset, baseline, offset))
-text.text(left_offset, 30 +baseline + offset, text_string)
+text.text(left_offset, baseline, text_string)
 
 
 # Add balloon

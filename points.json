@@ -1,6 +1,7 @@
 {
-	"callout_vertex": [ 310, 215 ],
-	"text_bottom_left": [ 410,95 ],
-	"text_string": "I like x",
-	"source_image": "/tmp/franklin.jpg"
+	"callout_vertex": [ 215, 135 ],
+	"text_bottom_left": [ 290, 55 ],
+	"text_string": "Tor some reason,some reason",
+	"source_image": "/tmp/laz.jpg",
+	"debug": true
 }
