@@ -1,7 +1,7 @@
 {
 	"callout_vertex": [ 215, 135 ],
-	"text_bottom_left": [ 290, 55 ],
-	"text_string": "Tor some reason,some reason",
+	"text_bottom_left": [ 290, 155 ],
+	"text_string": "Tor some reasonson\nFor some reason\nFor some reason",
 	"source_image": "/tmp/laz.jpg",
 	"debug": true
 }

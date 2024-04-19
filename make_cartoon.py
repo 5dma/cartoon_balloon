@@ -44,7 +44,8 @@ debug = data['debug']
 dimensions = new_image.size
 new_height = int((NEW_WIDTH/dimensions[0] ) * dimensions[1])
 new_image.resize(NEW_WIDTH, new_height)
-is_multiline = '\n' in text_string
+number_text_lines = text_string.count('\n') + 1
+is_multiline = (number_text_lines > 1)
 
 if debug:
 	print("Original size (wxh): {0}, {1}".format(dimensions[0], dimensions[1]))
@@ -63,11 +64,12 @@ float_metrics = metrics.size()
 text_width = int(float_metrics[0])
 text_height = int(float_metrics[1])
 print(metrics)
-print("Text interline spaceing {0}".format(text.text_interline_spacing))
-print("Character height: {0}".format(metrics[1]))
 print("text height: {0}, text width: {1}".format(text_height, text_width))
 left_offset = data['text_bottom_left'][0]
-baseline = int(data['text_bottom_left'][1]  - text.font_size)
+
+excess_spacing = text_height - (number_text_lines * text.font_size) # text height - characters
+partial_excess_spacing = excess_spacing * 0.75 # account for 0.75 for adjusting the top.
+baseline = int(data['text_bottom_left'][1] - (number_text_lines * text.font_size) -partial_excess_spacing)
 offset = 0
 if baseline < 0:
 	offset = abs(baseline) + EXTRA_OFFSET
