@@ -100,6 +100,7 @@ balloon.rectangle(left, top, right,bottom)
 
 #Add path
 vertex = data['callout_vertex']
+vertex[1] = vertex[1] + offset
 p1 = (left + INDENT, bottom - ELEVATION)
 p2 = vertex
 p3 = (p1[0] + SPACE, p1[1])
