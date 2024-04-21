@@ -15,8 +15,7 @@ ELEVATION = 10
 CALLOUT_INDENT = 10
 CALLOUT_SPACE = 20
 ELEVATION = 5
-INDENT = 10
-SPACE = 20
+SPACE = 10
 STROKE_WIDTH = 2
 EXTRA_OFFSET = 10
 FONT_SIZE = 20
@@ -132,14 +131,17 @@ top = data['text_bottom_left'][1] - text_height + EXCESS_TEXT_HEIGHT - PADDING +
 right = left + text_width + 2*PADDING
 bottom = top + text_height - EXCESS_TEXT_HEIGHT + 2*PADDING
 balloon.rectangle(left, top, right,bottom)
+if debug:
+	print("left: {0}, top: {1}, right: {2}, bottom: {3}".format(left,top,right,bottom))
 
 
 #Add path
 vertex = data['callout_vertex']
 vertex[1] = vertex[1] + offset
-p1 = (left + INDENT, bottom - ELEVATION)
+balloon_midpoint = int((right - left)/2 + left)
+p1 = (balloon_midpoint - SPACE, bottom - ELEVATION)
 p2 = vertex
-p3 = (p1[0] + SPACE, p1[1])
+p3 = (balloon_midpoint + SPACE, bottom - ELEVATION)
 path = Drawing()
 path.stroke_width = STROKE_WIDTH
 path.stroke_color = BALLOON_STROKE_COLOR

@@ -1,7 +1,7 @@
 {
-	"callout_vertex": [ 215, 135 ],
-	"text_bottom_left": [ 290, 155 ],
-	"text_string": "Tor some reasonson\nFor some reason\nFor some reason",
-	"source_image": "/tmp/laz.jpg",
+	"callout_vertex": [ 250, 300 ],
+	"text_bottom_left": [160, 140 ],
+	"text_string": "Abba, it's easy. Take the Dollar/Yuan cross rate, sell forward at a 20% premium, hedge the contract with gold futures, and we've made 20 cents before nap time!",
+	"source_image": "/tmp/trader.jpg",
 	"debug": true
 }
