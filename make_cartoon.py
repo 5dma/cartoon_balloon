@@ -22,6 +22,43 @@ EXTRA_OFFSET = 10
 FONT_SIZE = 20
 NEW_IMAGE = '/tmp/new_image.jpg'
 
+
+def drawing_with_split_text(temp_image, left_offset, start_text):
+
+	max_width = NEW_WIDTH - left_offset - PADDING - STROKE_WIDTH
+	is_multiline = False
+
+	text = Drawing()
+	text.font = 'Verdana'
+	text.fill_color = BALLOON_STROKE_COLOR
+	text.font_size = FONT_SIZE
+	text.gravity = 'north_west'
+
+	word_list = start_text.split(' ')
+	current_word = word_list.pop(0)
+	current_text = current_word
+	while word_list:
+		#print(current_text)
+		metrics = text.get_font_metrics(temp_image,current_text,multiline=is_multiline)
+		text_width = metrics[4]
+		if text_width > max_width:
+			old_text = current_text.rsplit(' ', 1)
+			new_text = '\n'.join(old_text)
+			current_text = new_text
+			is_multiline = True
+		current_word = word_list.pop(0)
+		current_text = current_text + ' ' + current_word
+
+	metrics = text.get_font_metrics(temp_image,current_text,multiline=is_multiline)
+	number_text_lines = current_text.count('\n') + 1
+	if debug:
+		print("At end of drawing_with_split_text:")
+		print("  new_text:" + new_text)
+		print("  text width: {0}".format(metrics[4]))
+
+	return {'text_drawing': text, 'split_string': current_text, 'metrics': metrics, 'number_text_lines': number_text_lines  } 
+
+
 if not exists('points.json'):
 	print("The configuration file points.json is missing. Create it and rerun this script.")
 	exit()
@@ -31,7 +68,6 @@ infile = open('points.json','r')
 data = json.load(infile)
 infile.close()
 #print(data)
-
 
 if not exists(data['source_image']):
 	print("The source image {0} is missing. Try again.".format(data['source_image']))
@@ -45,35 +81,35 @@ debug = data['debug']
 dimensions = new_image.size
 new_height = int((NEW_WIDTH/dimensions[0] ) * dimensions[1])
 new_image.resize(NEW_WIDTH, new_height)
-number_text_lines = text_string.count('\n') + 1
-is_multiline = (number_text_lines > 1)
 
 if debug:
 	print("Original size (wxh): {0}, {1}".format(dimensions[0], dimensions[1]))
 	print("Scaled size (wxh): {0}, {1}".format(NEW_WIDTH, new_height))
-	print("Is this a multiline text string? {0}".format(is_multiline))
 
 
 # Add text
-text = Drawing()
-text.font = 'Verdana'
-text.fill_color = BALLOON_STROKE_COLOR
-text.font_size = FONT_SIZE
-text.gravity = 'north_west'
-metrics = text.get_font_metrics(new_image,text_string,multiline=is_multiline)
-float_metrics = metrics.size()
-text_width = int(float_metrics[0])
-text_height = int(float_metrics[1])
+left_offset = data['text_bottom_left'][0]
+text_analysis =  drawing_with_split_text(new_image, left_offset, data['text_string'])
+metrics = text_analysis['metrics']
+text_height = metrics[5]
+text_width = metrics[4]
+text_drawing = text_analysis['text_drawing']
+font_size = metrics[0]
+excess_spacing = text_height - (text_analysis['number_text_lines'] * font_size) # text height - characters
+partial_excess_spacing = excess_spacing * 0.75 # account for 0.75 for adjusting the top.
+baseline = int(data['text_bottom_left'][1] - (text_analysis['number_text_lines'] * font_size) - partial_excess_spacing)
 
 if debug:
-	print(metrics)
-	print("text height: {0}, text width: {1}".format(text_height, text_width))
+	print(text_analysis['metrics'])
+	print("text width: {0}, text height: {1}".format(metrics[4],metrics[5] ))
+	print("Is this a multiline text string? {0}".format(text_analysis['number_text_lines'] > 1))
+	print("Number of text lines: {0}".format(text_analysis['number_text_lines']))
+	print("Font size: {0}".format(font_size))
+	print("Excess_spacing: {0}".format(excess_spacing))
+	print("Partial excess spacing: {0}".format(partial_excess_spacing))
+	print("Baseline: {0}".format(baseline))
 
-left_offset = data['text_bottom_left'][0]
 
-excess_spacing = text_height - (number_text_lines * text.font_size) # text height - characters
-partial_excess_spacing = excess_spacing * 0.75 # account for 0.75 for adjusting the top.
-baseline = int(data['text_bottom_left'][1] - (number_text_lines * text.font_size) -partial_excess_spacing)
 offset = 0
 if baseline < 0:
 	offset = abs(baseline) + EXTRA_OFFSET
@@ -83,7 +119,7 @@ if baseline < 0:
 if debug:
 	print("left_offset: {0}, baseline: {1}, offset: {2}".format(left_offset, baseline, offset))
 
-text.text(left_offset, baseline + offset, text_string)
+text_drawing.text(left_offset, baseline + offset, text_analysis['split_string'])
 
 
 # Add balloon
@@ -122,6 +158,6 @@ path.polyline(points)
 #Assemble image
 balloon(new_image)
 path(new_image)
-text(new_image)
+text_drawing(new_image)
 new_image.save(filename=NEW_IMAGE)
 print("New image at {0}".format(NEW_IMAGE))
