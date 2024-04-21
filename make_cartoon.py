@@ -77,9 +77,12 @@ text_string = data['text_string']
 debug = data['debug']
 
 # Scale image to 520 width
+resize_proportions = {}
 dimensions = new_image.size
 new_height = int((NEW_WIDTH/dimensions[0] ) * dimensions[1])
 new_image.resize(NEW_WIDTH, new_height)
+resize_proportions['x'] =  NEW_WIDTH/dimensions[0]
+resize_proportions['y'] =  new_height/dimensions[1]
 
 if debug:
 	print("Original size (wxh): {0}, {1}".format(dimensions[0], dimensions[1]))
@@ -136,7 +139,10 @@ if debug:
 
 
 #Add path
-vertex = data['callout_vertex']
+original_vertex = data['callout_vertex']
+vertex = [None, None ]
+vertex[0] = int(resize_proportions['x'] * original_vertex[0])
+vertex[1] = int(resize_proportions['y'] * original_vertex[1])
 vertex[1] = vertex[1] + offset
 balloon_midpoint = int((right - left)/2 + left)
 p1 = (balloon_midpoint - SPACE, bottom - ELEVATION)
