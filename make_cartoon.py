@@ -3,7 +3,6 @@ from wand.drawing import Drawing
 from wand.color import Color
 from os.path import exists
 import json
-import numpy
 
 NEW_WIDTH = 520
 BALLOON_FILL_COLOR = Color('#f2e38b')

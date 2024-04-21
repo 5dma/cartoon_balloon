@@ -1,7 +1,7 @@
 {
-	"callout_vertex": [ 250, 300 ],
-	"text_bottom_left": [160, 140 ],
-	"text_string": "Abba, it's easy. Take the Dollar/Yuan cross rate, sell forward at a 20% premium, hedge the contract with gold futures, and we've made 20 cents before nap time!",
-	"source_image": "/tmp/trader.jpg",
+	"callout_vertex": [ 355, 225 ],
+	"text_bottom_left": [155, 180 ],
+	"text_string": "Yeah, I think I'll quit surfing and work in an office all day.",
+	"source_image": "/tmp/surfer.jpg",
 	"debug": true
 }
