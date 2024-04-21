@@ -90,7 +90,7 @@ if debug:
 
 
 # Add text
-left_offset = data['text_bottom_left'][0]
+left_offset = int(data['text_bottom_left'][0] * resize_proportions['x'])
 text_analysis =  drawing_with_split_text(new_image, left_offset, data['text_string'])
 metrics = text_analysis['metrics']
 text_height = metrics[5]
@@ -99,7 +99,7 @@ text_drawing = text_analysis['text_drawing']
 font_size = metrics[0]
 excess_spacing = text_height - (text_analysis['number_text_lines'] * font_size) # text height - characters
 partial_excess_spacing = excess_spacing * 0.75 # account for 0.75 for adjusting the top.
-baseline = int(data['text_bottom_left'][1] - (text_analysis['number_text_lines'] * font_size) - partial_excess_spacing)
+baseline = int((data['text_bottom_left'][1] * resize_proportions['y']) - (text_analysis['number_text_lines'] * font_size) - partial_excess_spacing)
 
 if debug:
 	print(text_analysis['metrics'])
@@ -129,8 +129,8 @@ balloon = Drawing()
 balloon.stroke_width = STROKE_WIDTH
 balloon.stroke_color = BALLOON_STROKE_COLOR
 balloon.fill_color = BALLOON_FILL_COLOR
-left = data['text_bottom_left'][0] - PADDING
-top = data['text_bottom_left'][1] - text_height + EXCESS_TEXT_HEIGHT - PADDING + offset
+left = int(data['text_bottom_left'][0] * resize_proportions['x']) - PADDING
+top = int(data['text_bottom_left'][1] * resize_proportions['y']) - text_height + EXCESS_TEXT_HEIGHT - PADDING + offset
 right = left + text_width + 2*PADDING
 bottom = top + text_height - EXCESS_TEXT_HEIGHT + 2*PADDING
 balloon.rectangle(left, top, right,bottom)
