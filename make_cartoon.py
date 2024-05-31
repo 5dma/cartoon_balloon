@@ -1,3 +1,4 @@
+# To list fonts with ImageMagick,use convert -list font
 from wand.image import Image
 from wand.drawing import Drawing
 from wand.color import Color
@@ -18,6 +19,7 @@ SPACE = 10
 STROKE_WIDTH = 2
 EXTRA_OFFSET = 10
 FONT_SIZE = 20
+FONT = 'DejaVu-Sans'
 NEW_IMAGE = '/tmp/new_image.jpg'
 
 
@@ -27,7 +29,7 @@ def drawing_with_split_text(temp_image, left_offset, start_text):
 	is_multiline = False
 
 	text = Drawing()
-	text.font = 'Verdana'
+	text.font = FONT
 	text.fill_color = BALLOON_STROKE_COLOR
 	text.font_size = FONT_SIZE
 	text.gravity = 'north_west'
@@ -65,7 +67,7 @@ if not exists('points.json'):
 infile = open('points.json','r')
 data = json.load(infile)
 infile.close()
-#print(data)
+print(data)
 
 if not exists(data['source_image']):
 	print("The source image {0} is missing. Try again.".format(data['source_image']))
