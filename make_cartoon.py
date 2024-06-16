@@ -35,10 +35,11 @@ def drawing_with_split_text(temp_image, left_offset, start_text):
 	text.gravity = 'north_west'
 
 	word_list = start_text.split(' ')
-	current_word = word_list.pop(0)
-	current_text = current_word
+	current_text = ''
 	while word_list:
 		#print(current_text)
+		current_word = word_list.pop(0)
+		current_text = current_text + ' ' + current_word
 		metrics = text.get_font_metrics(temp_image,current_text,multiline=is_multiline)
 		text_width = metrics[4]
 		if text_width > max_width:
@@ -46,8 +47,9 @@ def drawing_with_split_text(temp_image, left_offset, start_text):
 			new_text = '\n'.join(old_text)
 			current_text = new_text
 			is_multiline = True
-		current_word = word_list.pop(0)
-		current_text = current_text + ' ' + current_word
+
+	# Remove initial whitespace that was added dring above while loop.
+	current_text = current_text.strip()
 
 	metrics = text.get_font_metrics(temp_image,current_text,multiline=is_multiline)
 	number_text_lines = current_text.count('\n') + 1
